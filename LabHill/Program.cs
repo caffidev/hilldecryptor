@@ -69,7 +69,7 @@ namespace LabHill
             using (var algorithm = new CryptoHill(Key, Alphabet))
             {
                 //All commands that you want to use - here
-                //All tests that I have done - in HillTest
+                //All tests that I have done - in LabHill.Tests
                 //The main result of program - below:
                 string enc = algorithm.Encrypt("cipher");
                 Console.WriteLine(enc);

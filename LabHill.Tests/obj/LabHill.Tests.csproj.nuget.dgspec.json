@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\lolho\\source\\repos\\LabHill\\HillTest\\LabHill.Tests.csproj": {}
+    "C:\\Users\\lolho\\source\\repos\\LabHill\\LabHill.Tests\\LabHill.Tests.csproj": {}
   },
   "projects": {
-    "C:\\Users\\lolho\\source\\repos\\LabHill\\HillTest\\LabHill.Tests.csproj": {
+    "C:\\Users\\lolho\\source\\repos\\LabHill\\LabHill.Tests\\LabHill.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lolho\\source\\repos\\LabHill\\HillTest\\LabHill.Tests.csproj",
+        "projectUniqueName": "C:\\Users\\lolho\\source\\repos\\LabHill\\LabHill.Tests\\LabHill.Tests.csproj",
         "projectName": "LabHill.Tests",
-        "projectPath": "C:\\Users\\lolho\\source\\repos\\LabHill\\HillTest\\LabHill.Tests.csproj",
+        "projectPath": "C:\\Users\\lolho\\source\\repos\\LabHill\\LabHill.Tests\\LabHill.Tests.csproj",
         "packagesPath": "C:\\Users\\lolho\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lolho\\source\\repos\\LabHill\\HillTest\\obj\\",
+        "outputPath": "C:\\Users\\lolho\\source\\repos\\LabHill\\LabHill.Tests\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\lolho\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using LabHill.Exceptions;
 using Xunit;
 
-namespace HillTest
+namespace LabHill.Tests
 {
     public class HillTest
     {
