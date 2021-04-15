@@ -11,7 +11,7 @@ namespace LabHill.Tests
     {
         private List<char> Alphabet { get; set; }
         private string key3x3 { get; set; } = "hillciphe";
-        public void InitializeEnglishAlphabet()
+        internal void InitializeEnglishAlphabet()
         {
             Alphabet = new List<char>();
             int i = 0;
