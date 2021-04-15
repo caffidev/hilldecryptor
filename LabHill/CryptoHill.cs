@@ -42,33 +42,42 @@ namespace LabHill
         //Algorithm was made by Сосочек бога(Denis)
         public List<int> Encrypt(List<int> dec)
         {
-            //List<int> key => List<double> keyD with help of the ListConverter
-            List<double> keyD = key.ConvertAll(x => (double) x);
-            //Converting int[] text => double[] text (List)
-            List<double> decD = dec.ConvertAll(x => (double) x);
-            //Getting the square root number of the length in List<int>
-            //Pointless to use keyD because it just slows down the program
-            int square = Convert.ToInt32(Math.Sqrt(key.Count));
-            //Creating a matrix for a key using Math.Net
-            Matrix<double> keyMatrix = DenseMatrix.OfColumnMajor(
-                square, key.Count / square, keyD.AsEnumerable());
-            //Creating a matrix for a decrypted text(int) using Math.Net
-            Matrix<double> decMatrix = DenseMatrix.OfColumnMajor(
-                square, dec.Count / square, decD.AsEnumerable());
-            List<int> finalResult = new List<int>();
-            //Hill method
-            for (int i = 0; i < decMatrix.ColumnCount; i++)
+            try
             {
-                List<double> res = new List<double>();
-                int alpNumber = alphabet?.Count ?? 26;
-                res = (((decMatrix.Column(i)).ToRowMatrix() * keyMatrix) % alpNumber).Enumerate().ToList();
+                //List<int> key => List<double> keyD with help of the ListConverter
+                List<double> keyD = key.ConvertAll(x => (double) x);
+                //Converting int[] text => double[] text (List)
+                List<double> decD = dec.ConvertAll(x => (double) x);
+                //Getting the square root number of the length in List<int>
+                //Pointless to use keyD because it just slows down the program
+                int square = Convert.ToInt32(Math.Sqrt(key.Count));
+                //Creating a matrix for a key using Math.Net
+                Matrix<double> keyMatrix = DenseMatrix.OfColumnMajor(
+                    square, key.Count / square, keyD.AsEnumerable());
+                //Creating a matrix for a decrypted text(int) using Math.Net
+                Matrix<double> decMatrix = DenseMatrix.OfColumnMajor(
+                    square, dec.Count / square, decD.AsEnumerable());
+                List<int> finalResult = new List<int>();
+                //Hill method
+                for (int i = 0; i < decMatrix.ColumnCount; i++)
+                {
+                    List<double> res = new List<double>();
+                    int alpNumber = alphabet?.Count ?? 26;
+                    res = (((decMatrix.Column(i)).ToRowMatrix() * keyMatrix) % alpNumber).Enumerate().ToList();
 
-                for(int j =0; j < res.Count; j++ ){
-                    finalResult.Add((int)res[j]);
+                    for (int j = 0; j < res.Count; j++)
+                    {
+                        finalResult.Add((int) res[j]);
+                    }
                 }
-            }
 
-            return finalResult;
+                return finalResult;
+            }
+            catch (ArgumentOutOfRangeException arg)
+            {
+                throw new InvalidKeyLengthException(
+                    "Invalid length of the key. It should be able to convert into root square.");
+            }
         }
 
         public List<int> Decrypt(List<int> enc)
@@ -123,7 +132,6 @@ namespace LabHill
                 throw new InvalidKeyLengthException(
                     "Invalid length of the key. It should be able to convert into root square.");
             }
-            return null;
         }
 
         #endregion
