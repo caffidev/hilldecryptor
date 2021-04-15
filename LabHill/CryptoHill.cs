@@ -53,8 +53,7 @@ namespace LabHill
         /// <returns></returns>
         public List<int> Encrypt(List<int> dec)
         {
-            try
-            {
+           
                 //List<int> key => List<double> keyD with help of the ListConverter
                 List<double> keyD = Key.ConvertAll(x => (double) x);
                 //Converting int[] text => double[] text (List)
@@ -67,8 +66,15 @@ namespace LabHill
                     square, Key.Count / square, keyD.AsEnumerable());
                 //Creating a matrix for a decrypted text(int) using Math.Net
                 Matrix<double> decMatrix = DenseMatrix.OfColumnMajor(
-                    square, dec.Count / square, decD.AsEnumerable());
+                    square, (int) dec.Count / square, decD.AsEnumerable());
                 List<int> finalResult = new List<int>();
+
+                //Checking if keyMatrix is different
+                if (Math.Abs((int)keyMatrix[0, 0]).ToString() != Math.Abs((double)keyMatrix[0, 0]).ToString())
+                {
+                    throw new InvalidKeyException("Invalid key. Try using another.");
+                }
+
                 //Hill method
                 for (int i = 0; i < decMatrix.ColumnCount; i++)
                 {
@@ -83,12 +89,12 @@ namespace LabHill
                 }
 
                 return finalResult;
-            }
-            catch (ArgumentOutOfRangeException )
-            {
-                throw new InvalidKeyLengthException(
-                    "Invalid length of the key. It should be able to convert into root square.");
-            }
+           
+            //catch (ArgumentOutOfRangeException)
+            //{
+            //    throw new InvalidKeyLengthException(
+            //        "Invalid length of the key. It should be able to convert into root square.");
+            //}
         }
 
         public List<int> Decrypt(List<int> enc)
@@ -100,6 +106,8 @@ namespace LabHill
 
             try
             {
+                //I'm using Math.Net here, that creates Matrix for me, so I don't have to
+                //create a lot of arrays just to contain them
                 Matrix<double> keyMatrix = DenseMatrix.OfColumnMajor(
                     square, Key.Count / square, keyD.AsEnumerable());
                 Matrix<double> encMatrix = DenseMatrix.OfColumnMajor(
@@ -107,7 +115,6 @@ namespace LabHill
                 List<int> finalResult = new List<int>();
 
 
-                //Inversed code. Doesn't work yet.
                 if (keyMatrix.ColumnCount == 3)
                 {
                     keyMatrix = ModInMinorCofactor(keyMatrix.Transpose(), DetMatrix(keyMatrix));
@@ -172,7 +179,7 @@ namespace LabHill
         }
 
         /// <summary>
-        /// Not mine.
+        /// Not mine. Thanks to zeyadetman.
         /// </summary>
         /// <param name="m"></param>
         /// <param name="a"></param>
@@ -194,7 +201,7 @@ namespace LabHill
         }
 
         /// <summary>
-        /// Not mine.
+        /// Not mine. Thanks to zeyadetman.
         /// </summary>
         /// <param name="m"></param>
         /// <returns></returns>
@@ -237,7 +244,7 @@ namespace LabHill
             return AlpNumberToString(Decrypt(StringToAlpNumber(encString)));
         }
 
-        //Better to use async and ConcurrentQueue to get a better performance;
+        //Better to use async and ConcurrentQueue to get a better performance
         /// <summary>
         /// <inheritdoc cref="Encrypt(System.Collections.Generic.List{int})"/>
         /// </summary>
