@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "fdidMBuQ0x1DfVWMqEDXVlehvOGLc9um0H3qBjSKSwbzRumqa/uxoknRvG/UIqCEI0L5L79D3H8AMoxWQuypWg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\lolho\\source\\repos\\LabHill\\LabHill\\LabHill.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\lolho\\.nuget\\packages\\mathnet.numerics\\4.15.0\\mathnet.numerics.4.15.0.nupkg.sha512"
+  ],
+  "logs": []
+}
