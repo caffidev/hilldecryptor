@@ -51,7 +51,7 @@ namespace LabHill.Tests
         public void Decrypt_InvalidKey_InvalidKeyException()
         {
             InitializeEnglishAlphabet();
-            string errorKey = "densdsdsdisdsdssloxx";
+            string errorKey = "denisloxx";
             using (var algorithm = new CryptoHill(errorKey, Alphabet))
             {
                 Assert.Throws<InvalidKeyException>(() => algorithm.Decrypt("jcqint"));

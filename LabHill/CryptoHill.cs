@@ -11,27 +11,33 @@ using MathNet.Numerics.LinearAlgebra.Double;
 namespace LabHill
 {
     /// <summary>
-    /// The <see cref="List{int}"/>&lt;<see cref="int"/>&gt; is row based. Which means
+    /// The <see cref="List{int}"/> is row based. Which means
     /// that the key is given in row-based manner.
+    /// <para>It can be used to cryptographic operations, such as encrypting/decrypting information
+    /// with help of Hill cryptographic method.</para>
     /// </summary>
     public class CryptoHill : IDisposable
     {
         //Used key
-        private readonly List<int> key;
+        private List<int> Key { get; }
         private readonly List<char> alphabet;
 
         #region Constructor and destructor
 
         /// <summary>
-        /// Default constructor. Needed key
+        /// Default constructor. Key is mandatory.
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">Key in <see cref="string"/> type, that converts then into <para>
+        /// <see cref="List{int}"/> and then can be get (not set) by <see cref="Key"/> property.</para></param>
         public CryptoHill(string keyStr, List<char> alphabet)
         {
             this.alphabet = alphabet;
-            key = StringToAlpNumber(keyStr);
+            Key = StringToAlpNumber(keyStr);
         }
 
+        /// <summary>
+        /// Replaces destructor. GC is freeing the memory. (it's not necessary however)
+        /// </summary>
         public void Dispose()
         {
             GC.SuppressFinalize(this);
@@ -39,21 +45,26 @@ namespace LabHill
         #endregion
 
         #region Usual Methods
-        //Algorithm was made by Сосочек бога(Denis)
+        
+        /// <summary>
+        /// Method that encrypts information using Hill cryptographic method.
+        /// </summary>
+        /// <param name="dec"></param>
+        /// <returns></returns>
         public List<int> Encrypt(List<int> dec)
         {
             try
             {
                 //List<int> key => List<double> keyD with help of the ListConverter
-                List<double> keyD = key.ConvertAll(x => (double) x);
+                List<double> keyD = Key.ConvertAll(x => (double) x);
                 //Converting int[] text => double[] text (List)
                 List<double> decD = dec.ConvertAll(x => (double) x);
                 //Getting the square root number of the length in List<int>
                 //Pointless to use keyD because it just slows down the program
-                int square = Convert.ToInt32(Math.Sqrt(key.Count));
+                int square = Convert.ToInt32(Math.Sqrt(Key.Count));
                 //Creating a matrix for a key using Math.Net
                 Matrix<double> keyMatrix = DenseMatrix.OfColumnMajor(
-                    square, key.Count / square, keyD.AsEnumerable());
+                    square, Key.Count / square, keyD.AsEnumerable());
                 //Creating a matrix for a decrypted text(int) using Math.Net
                 Matrix<double> decMatrix = DenseMatrix.OfColumnMajor(
                     square, dec.Count / square, decD.AsEnumerable());
@@ -73,7 +84,7 @@ namespace LabHill
 
                 return finalResult;
             }
-            catch (ArgumentOutOfRangeException arg)
+            catch (ArgumentOutOfRangeException )
             {
                 throw new InvalidKeyLengthException(
                     "Invalid length of the key. It should be able to convert into root square.");
@@ -82,15 +93,15 @@ namespace LabHill
 
         public List<int> Decrypt(List<int> enc)
         {
-            List<double> keyD = key.ConvertAll(x => (double) x);
+            List<double> keyD = Key.ConvertAll(x => (double) x);
             List<double> encD = enc.ConvertAll(x => (double) x);
 
-            int square = Convert.ToInt32(Math.Sqrt(key.Count));
+            int square = Convert.ToInt32(Math.Sqrt(Key.Count));
 
             try
             {
                 Matrix<double> keyMatrix = DenseMatrix.OfColumnMajor(
-                    square, key.Count / square, keyD.AsEnumerable());
+                    square, Key.Count / square, keyD.AsEnumerable());
                 Matrix<double> encMatrix = DenseMatrix.OfColumnMajor(
                     square, enc.Count / square, encD.AsEnumerable());
                 List<int> finalResult = new List<int>();
@@ -127,7 +138,7 @@ namespace LabHill
 
                 return finalResult;
             }
-            catch (ArgumentOutOfRangeException arg)
+            catch (ArgumentOutOfRangeException)
             {
                 throw new InvalidKeyLengthException(
                     "Invalid length of the key. It should be able to convert into root square.");
@@ -141,7 +152,7 @@ namespace LabHill
         {
             List<int> key = new List<int>();
 
-            foreach (char c in keyStr.ToCharArray())
+            foreach (char c in keyStr)
             {
                 key.Add(alphabet.IndexOf(c));
             }
@@ -183,7 +194,7 @@ namespace LabHill
         }
 
         /// <summary>
-        /// Test code.
+        /// Not mine.
         /// </summary>
         /// <param name="m"></param>
         /// <returns></returns>
@@ -209,8 +220,13 @@ namespace LabHill
         }
         #endregion
 
-        #region Overriden methods
+        #region Override methods
 
+        /// <summary>
+        /// <inheritdoc cref="Encrypt(System.Collections.Generic.List{int})"/>
+        /// </summary>
+        /// <param name="decString"></param>
+        /// <returns></returns>
         public string Encrypt(string decString)
         {
             return AlpNumberToString(Encrypt(StringToAlpNumber(decString)));
@@ -222,6 +238,11 @@ namespace LabHill
         }
 
         //Better to use async and ConcurrentQueue to get a better performance;
+        /// <summary>
+        /// <inheritdoc cref="Encrypt(System.Collections.Generic.List{int})"/>
+        /// </summary>
+        /// <param name="decStrings"></param>
+        /// <returns></returns>
         public List<string> Encrypt(List<string> decStrings)
         {
             List<string> encStrings = new List<string>();
