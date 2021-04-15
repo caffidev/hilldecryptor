@@ -5675,9 +5675,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\lolho\\source\\repos\\LabHill\\HillTest\\HillTest.csproj",
-      "projectName": "HillTest",
-      "projectPath": "C:\\Users\\lolho\\source\\repos\\LabHill\\HillTest\\HillTest.csproj",
+      "projectUniqueName": "C:\\Users\\lolho\\source\\repos\\LabHill\\HillTest\\LabHill.Tests.csproj",
+      "projectName": "LabHill.Tests",
+      "projectPath": "C:\\Users\\lolho\\source\\repos\\LabHill\\HillTest\\LabHill.Tests.csproj",
       "packagesPath": "C:\\Users\\lolho\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\lolho\\source\\repos\\LabHill\\HillTest\\obj\\",
       "projectStyle": "PackageReference",

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "3kbKXBfTes0Nbt+pGSpQbUoGdO4j55mgVhLU2xufwgUefHp7z0l5oob6NcUkcV0kO19Hk/fsy11gAt9p2GFjLg==",
+  "dgSpecHash": "tZLNBWUk5NLqWLuI7X2rie97tdQF9UuWcRUgrvf0T2mi4im3KlCTPHgK5Wb9AluC3pUf9PufQB+zc/7Pm86ugA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\lolho\\source\\repos\\LabHill\\HillTest\\HillTest.csproj",
+  "projectFilePath": "C:\\Users\\lolho\\source\\repos\\LabHill\\HillTest\\LabHill.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\lolho\\.nuget\\packages\\coverlet.collector\\1.3.0\\coverlet.collector.1.3.0.nupkg.sha512",
     "C:\\Users\\lolho\\.nuget\\packages\\mathnet.numerics\\4.15.0\\mathnet.numerics.4.15.0.nupkg.sha512",
