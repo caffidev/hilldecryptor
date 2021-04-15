@@ -10,6 +10,10 @@ namespace LabHill.Tests
     public class HillTest
     {
         private List<char> Alphabet { get; set; }
+        private List<int> keyAlph = new List<int>() { 3, 2, 8, 5 };
+        List<int> decodedAlph = new List<int>() { 15, 0, 24, 12, 14, 17, 4, 12, 14, 13, 4, 24 };
+        List<int> encodedAlph = new List<int>() { 19, 16, 18, 18, 24, 15, 10, 14, 16, 21, 8, 22 };
+
         private string decoded3x3 = "cipher";
         private string encoded3x3 = "jcqint";
         private string key3x3 = "hillciphe";
@@ -26,6 +30,45 @@ namespace LabHill.Tests
             }
         }
 
+        [Fact]
+        public void Encrypt_Int_2x2()
+        {
+            InitializeEnglishAlphabet();
+            using (var algorithm = new CryptoHill(keyAlph, Alphabet))
+            {
+                Assert.Equal(algorithm.Encrypt(decodedAlph), encodedAlph);
+            }
+        }
+
+        [Fact]
+        public void Decrypt_Int_2x2()
+        {
+            InitializeEnglishAlphabet();
+            using (var algorithm = new CryptoHill(keyAlph, Alphabet))
+            {
+                Assert.Equal(algorithm.Decrypt(encodedAlph), decodedAlph);
+            }
+        }
+
+        //[Fact]
+        //public void Encrypt_String_2x2()
+        //{
+        //    InitializeEnglishAlphabet();
+        //    using (var algorithm = new CryptoHill(key3x3, Alphabet))
+        //    {
+        //        Assert.Matches(algorithm.Encrypt(decoded3x3), encoded3x3);
+        //    }
+        //}
+
+        //[Fact]
+        //public void Encrypt_String_2x2()
+        //{
+        //    InitializeEnglishAlphabet();
+        //    using (var algorithm = new CryptoHill(key3x3, Alphabet))
+        //    {
+        //        Assert.Matches(algorithm.Encrypt(decoded3x3), encoded3x3);
+        //    }
+        //}
 
         [Fact]
         public void Encrypt_String_3x3()
@@ -84,7 +127,7 @@ namespace LabHill.Tests
         public void Decrypt_InvalidKey_InvalidKeyLengthException()
         {
             InitializeEnglishAlphabet();
-            string errorKey = "denislox";
+            string errorKey = "denisloxkujgb";
             using (var algorithm = new CryptoHill(errorKey, Alphabet))
             {
                 Assert.Throws<InvalidKeyLengthException>(() => algorithm.Decrypt("jcqint"));

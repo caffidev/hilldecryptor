@@ -25,7 +25,7 @@ namespace LabHill
         #region Constructor and destructor
 
         /// <summary>
-        /// Default constructor. Key is mandatory.
+        /// Default constructor, but with string. Key is mandatory.
         /// </summary>
         /// <param name="key">Key in <see cref="string"/> type, that converts then into <para>
         /// <see cref="List{int}"/> and then can be get (not set) by <see cref="Key"/> property.</para></param>
@@ -33,6 +33,16 @@ namespace LabHill
         {
             this.alphabet = alphabet;
             Key = StringToAlpNumber(keyStr);
+        }
+
+        /// <summary>
+        /// Default constructor. Key is mandatory.
+        /// </summary>
+        /// <param name="key">Key in <see cref="List{int}"/></param>
+        public CryptoHill(List<int> key, List<char> alphabet)
+        {
+            this.alphabet = alphabet;
+            Key = key;
         }
 
         /// <summary>
@@ -69,7 +79,7 @@ namespace LabHill
                     square, (int) dec.Count / square, decD.AsEnumerable());
                 List<int> finalResult = new List<int>();
 
-                //Checking if keyMatrix is different
+                //Checking if keyMatrix is different. If numbers are not equal, return.
                 if (Math.Abs((int)keyMatrix[0, 0]).ToString() != Math.Abs((double)keyMatrix[0, 0]).ToString())
                 {
                     throw new InvalidKeyException("Invalid key. Try using another.");
@@ -126,10 +136,11 @@ namespace LabHill
                     Console.WriteLine(((int) keyMatrix[0, 0]) + ", " + ((int) keyMatrix[0, 0]).ToString());
                 }
 
-                if (Math.Abs((int) keyMatrix[0, 0]).ToString() != Math.Abs((double) keyMatrix[0, 0]).ToString())
-                {
-                    throw new InvalidKeyException("Invalid key. Try using another.");
-                }
+                //Doesn't work, and I idk why
+                //if (Math.Abs((int)keyMatrix[0, 0]).ToString() != Math.Abs((double)keyMatrix[0, 0]).ToString())
+                //{
+                //    throw new InvalidKeyException("Invalid key. Try using another.");
+                //}
 
                 //Hill method (with matrix)
                 for (int i = 0; i < encMatrix.ColumnCount; i++)
