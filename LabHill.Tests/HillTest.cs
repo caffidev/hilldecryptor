@@ -10,13 +10,17 @@ namespace LabHill.Tests
     public class HillTest
     {
         private List<char> Alphabet { get; set; }
-        private List<int> keyAlph = new List<int>() { 3, 2, 8, 5 };
-        List<int> decodedAlph = new List<int>() { 15, 0, 24, 12, 14, 17, 4, 12, 14, 13, 4, 24 };
-        List<int> encodedAlph = new List<int>() { 19, 16, 18, 18, 24, 15, 10, 14, 16, 21, 8, 22 };
+        private List<int> keyAlph = new() { 3, 2, 8, 5 };
+        List<int> decodedAlph = new () { 15, 0, 24, 12, 14, 17, 4, 12, 14, 13, 4, 24 };
+        List<int> encodedAlph = new() { 19, 16, 18, 18, 24, 15, 10, 14, 16, 21, 8, 22 };
 
-        private string decoded3x3 = "cipher";
-        private string encoded3x3 = "jcqint";
+        private string decodedStr = "cipher";
+
+        private string key2x2 = "dcif";
+        private string encoded2x2 = "wehzun";
+
         private string key3x3 = "hillciphe";
+        private string encoded3x3 = "jcqint";
 
         private string key4x4 = "hillcipherworker";
         internal void InitializeEnglishAlphabet()
@@ -50,25 +54,25 @@ namespace LabHill.Tests
             }
         }
 
-        //[Fact]
-        //public void Encrypt_String_2x2()
-        //{
-        //    InitializeEnglishAlphabet();
-        //    using (var algorithm = new CryptoHill(key3x3, Alphabet))
-        //    {
-        //        Assert.Matches(algorithm.Encrypt(decoded3x3), encoded3x3);
-        //    }
-        //}
+        [Fact]
+        public void Encrypt_String_2x2()
+        {
+            InitializeEnglishAlphabet();
+            using (var algorithm = new CryptoHill(key2x2, Alphabet))
+            {
+                Assert.Matches(algorithm.Encrypt(decodedStr), encoded2x2);
+            }
+        }
 
-        //[Fact]
-        //public void Encrypt_String_2x2()
-        //{
-        //    InitializeEnglishAlphabet();
-        //    using (var algorithm = new CryptoHill(key3x3, Alphabet))
-        //    {
-        //        Assert.Matches(algorithm.Encrypt(decoded3x3), encoded3x3);
-        //    }
-        //}
+        [Fact]
+        public void Decrypt_String_2x2()
+        {
+            InitializeEnglishAlphabet();
+            using (var algorithm = new CryptoHill(key2x2, Alphabet))
+            {
+                Assert.Matches(algorithm.Decrypt(encoded2x2), decodedStr);
+            }
+        }
 
         [Fact]
         public void Encrypt_String_3x3()
@@ -76,7 +80,7 @@ namespace LabHill.Tests
             InitializeEnglishAlphabet();
             using (var algorithm = new CryptoHill(key3x3, Alphabet))
             {
-                Assert.Matches(algorithm.Encrypt(decoded3x3), encoded3x3);
+                Assert.Matches(algorithm.Encrypt(decodedStr), encoded3x3);
             }
         }
 
@@ -86,7 +90,7 @@ namespace LabHill.Tests
             InitializeEnglishAlphabet();
             using (var algorithm = new CryptoHill(key3x3, Alphabet))
             {
-                Assert.Matches(algorithm.Decrypt(encoded3x3), decoded3x3);
+                Assert.Matches(algorithm.Decrypt(encoded3x3), decodedStr);
             }
         }
 
@@ -96,7 +100,7 @@ namespace LabHill.Tests
             InitializeEnglishAlphabet();
             using (var algorithm = new CryptoHill(key4x4, Alphabet))
             {
-                Assert.Matches(algorithm.Encrypt(decoded3x3), encoded3x3);
+                Assert.Matches(algorithm.Encrypt(decodedStr), decodedStr);
             }
         }
 
@@ -106,7 +110,7 @@ namespace LabHill.Tests
             InitializeEnglishAlphabet();
             using (var algorithm = new CryptoHill(key4x4, Alphabet))
             {
-                Assert.Matches(algorithm.Decrypt( decoded3x3), decoded3x3);
+                Assert.Matches(algorithm.Decrypt( decodedStr), decodedStr);
             }
         }
 

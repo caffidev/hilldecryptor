@@ -71,7 +71,7 @@ namespace LabHill
                 //All commands that you want to use - here
                 //All tests that I have done - in LabHill.Tests
                 //The main result of program - below:
-                string enc = algorithm.Encrypt("ciph");
+                string enc = algorithm.Encrypt("cipher");
                 Console.WriteLine(enc);
                 string dec = algorithm.Decrypt(enc);
                 Console.WriteLine(dec);
