@@ -63,7 +63,8 @@ namespace LabHill
         /// <returns></returns>
         public List<int> Encrypt(List<int> dec)
         {
-           
+            try
+            {
                 //List<int> key => List<double> keyD with help of the ListConverter
                 List<double> keyD = Key.ConvertAll(x => (double) x);
                 //Converting int[] text => double[] text (List)
@@ -80,7 +81,7 @@ namespace LabHill
                 List<int> finalResult = new List<int>();
 
                 //Checking if keyMatrix is different. If numbers are not equal, return.
-                if (Math.Abs((int)keyMatrix[0, 0]).ToString() != Math.Abs((double)keyMatrix[0, 0]).ToString())
+                if (Math.Abs((int) keyMatrix[0, 0]).ToString() != Math.Abs((double) keyMatrix[0, 0]).ToString())
                 {
                     throw new InvalidKeyException("Invalid key. Try using another.");
                 }
@@ -99,12 +100,13 @@ namespace LabHill
                 }
 
                 return finalResult;
-           
-            //catch (ArgumentOutOfRangeException)
-            //{
-            //    throw new InvalidKeyLengthException(
-            //        "Invalid length of the key. It should be able to convert into root square.");
-            //}
+            }
+            //doesn't work with 2^4 and higher routes
+            catch (ArgumentOutOfRangeException)
+            {
+                throw new InvalidKeyLengthException(
+                    "Invalid length of the key. It should be able to convert into root square.");
+            }
         }
 
         public List<int> Decrypt(List<int> enc)
@@ -124,6 +126,11 @@ namespace LabHill
                     square, enc.Count / square, encD.AsEnumerable());
                 List<int> finalResult = new List<int>();
 
+                //Doesn't work, and I idk why
+                if (Math.Abs((int)keyMatrix[0, 0]).ToString() != Math.Abs((double)keyMatrix[0, 0]).ToString())
+                {
+                    throw new InvalidKeyException("Invalid key. Try using another.");
+                }
 
                 if (keyMatrix.ColumnCount == 3)
                 {
@@ -136,11 +143,6 @@ namespace LabHill
                     Console.WriteLine(((int) keyMatrix[0, 0]) + ", " + ((int) keyMatrix[0, 0]).ToString());
                 }
 
-                //Doesn't work, and I idk why
-                //if (Math.Abs((int)keyMatrix[0, 0]).ToString() != Math.Abs((double)keyMatrix[0, 0]).ToString())
-                //{
-                //    throw new InvalidKeyException("Invalid key. Try using another.");
-                //}
 
                 //Hill method (with matrix)
                 for (int i = 0; i < encMatrix.ColumnCount; i++)

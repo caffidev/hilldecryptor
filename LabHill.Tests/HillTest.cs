@@ -22,7 +22,7 @@ namespace LabHill.Tests
         private string key3x3 = "hillciphe";
         private string encoded3x3 = "jcqint";
 
-        private string key4x4 = "hillcipherworker";
+        private string key4x4 = "hillworkercipher";
         internal void InitializeEnglishAlphabet()
         {
             Alphabet = new List<char>();
@@ -116,10 +116,33 @@ namespace LabHill.Tests
 
         #region Exception Testing
         [Fact]
-        public void Decrypt_InvalidKey_InvalidKeyException()
+        public void Encrypt_InvalidKey_InvalidKeyException()
         {
             InitializeEnglishAlphabet();
             string errorKey = "denisloxx";
+            using (var algorithm = new CryptoHill(errorKey, Alphabet))
+            {
+                //Doesn't work because there's no 
+                Assert.Throws<InvalidKeyException>(() => algorithm.Encrypt("cipher"));
+            }
+        }
+
+        [Fact]
+        public void Encrypt_InvalidKey_InvalidKeyLengthException()
+        {
+            InitializeEnglishAlphabet();
+            string errorKey = "denisloxkujgb";
+            using (var algorithm = new CryptoHill(errorKey, Alphabet))
+            {
+                Assert.Throws<InvalidKeyLengthException>(() => algorithm.Encrypt("cipher"));
+            }
+        }
+
+        [Fact]
+        public void Decrypt_InvalidKey_InvalidKeyException()
+        {
+            InitializeEnglishAlphabet();
+            string errorKey = "denisloxx"; //has 3^2 size, but it's wrong because matrixes doesn't come up
             using (var algorithm = new CryptoHill(errorKey, Alphabet))
             {
                 //Doesn't work because there's no 
