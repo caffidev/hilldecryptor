@@ -11,8 +11,13 @@ namespace LabHill.Tests
     {
         private List<char> Alphabet { get; set; }
         private List<int> keyAlph = new() { 3, 2, 8, 5 };
-        List<int> decodedAlph = new () { 15, 0, 24, 12, 14, 17, 4, 12, 14, 13, 4, 24 };
-        List<int> encodedAlph = new() { 19, 16, 18, 18, 24, 15, 10, 14, 16, 21, 8, 22 };
+        private List<int> decodedAlph = new () { 15, 0, 24, 12, 14, 17, 4, 12, 14, 13, 4, 24 };
+        private List<int> encodedAlph = new() { 19, 16, 18, 18, 24, 15, 10, 14, 16, 21, 8, 22 };
+
+        private List<int> keyAlph3x3 = new() { 1, 10, 0, 0, 20, 1, 2, 15, 2 };
+        private List<int> decodedAlph3x3 = new () { 5, 21, 2, 5, 2, 16, 19, 14, 1 };
+        private List<int> encodedAlph3x3 = new () { 7, 6, 17, 25, 4, 20, 3, 21, 16 };
+        
 
         private string decodedStr = "cipher";
 
@@ -22,7 +27,7 @@ namespace LabHill.Tests
         private string key3x3 = "hillciphe";
         private string encoded3x3 = "jcqint";
 
-        private string key4x4 = "hillworkercipher";
+        private string key4x4 = "paymoremoney";
         internal void InitializeEnglishAlphabet()
         {
             Alphabet = new List<char>();
@@ -51,6 +56,26 @@ namespace LabHill.Tests
             using (var algorithm = new CryptoHill(keyAlph, Alphabet))
             {
                 Assert.Equal(algorithm.Decrypt(encodedAlph), decodedAlph);
+            }
+        }
+
+        [Fact]
+        public void Encrypt_Int_3x3()
+        {
+            InitializeEnglishAlphabet();
+            using (var algorithm = new CryptoHill(keyAlph3x3, Alphabet))
+            {
+                Assert.Equal(algorithm.Encrypt(decodedAlph3x3), encodedAlph3x3);
+            }
+        }
+
+        [Fact]
+        public void Decrypt_Int_3x3()
+        {
+            InitializeEnglishAlphabet();
+            using (var algorithm = new CryptoHill(keyAlph3x3, Alphabet))
+            {
+                Assert.Equal(algorithm.Decrypt(encodedAlph3x3), decodedAlph3x3);
             }
         }
 

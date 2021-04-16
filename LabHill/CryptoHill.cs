@@ -47,6 +47,7 @@ namespace LabHill
 
         /// <summary>
         /// Replaces destructor. GC is freeing the memory. (it's not necessary however)
+        /// --todo: use ~destructor along with IDisposable
         /// </summary>
         public void Dispose()
         {
@@ -126,7 +127,6 @@ namespace LabHill
                     square, enc.Count / square, encD.AsEnumerable());
                 List<int> finalResult = new List<int>();
 
-                //Doesn't work, and I idk why
                 if (Math.Abs((int)keyMatrix[0, 0]).ToString() != Math.Abs((double)keyMatrix[0, 0]).ToString())
                 {
                     throw new InvalidKeyException("Invalid key. Try using another.");
