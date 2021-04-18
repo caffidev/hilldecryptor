@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Numerics;
-using System.Reflection.Metadata.Ecma335;
 using LabHill.Exceptions;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
@@ -56,35 +54,101 @@ namespace LabHill
         #endregion
 
         #region Usual Methods
-        
+
+        /// <summary>
+        /// Analyses 3x3 and 2x2 matrixes to find a key with help of known decrypted and encrypted text
+        /// </summary>
+        /// <param name="dec"></param>
+        /// <param name="enc"></param>
+        /// <param name="keyLength">The Length of The Key in Square Root</param>
+        /// <returns></returns>
+        public List<int> Analyse(List<int> dec, List<int> enc, int keyLength)
+        {
+            List<double> decD = dec.ConvertAll(x => (double) x);
+            List<double> encD = enc.ConvertAll(x => (double) x);
+
+            int square = (int) Math.Sqrt(decD.Count);
+            Matrix<double> decMatrix = DenseMatrix.OfColumnMajor(
+                square, (int) dec.Count / square, decD.AsEnumerable());
+            Matrix<double> encMatrix = DenseMatrix.OfColumnMajor(
+                square, (int) enc.Count / square, encD.AsEnumerable());
+
+            //Constructing List
+            List<int> mayBeKey = new List<int>();
+
+            //HERE YOU NEED TO PASTE UNIVERSAL ALGORITHM
+            //1. 2x2
+            if (keyLength == 2)
+            {
+                for (int i = 0; i < 26; i++)
+                {
+                    for (int j = 0; j < 26; j++)
+                    {
+                        for (int k = 0; k < 26; k++)
+                        {
+                            for (int l = 0; l < 26; l++)
+                            {
+                                mayBeKey = new List<int>(new[] {i, j, k, l});
+                                List<int> aa = Encrypt(dec, mayBeKey);
+                                if (aa.SequenceEqual(enc))
+                                {
+                                    return mayBeKey;
+                                }
+
+                            }
+                        }
+                    }
+                }
+                throw new InvalidAnalysisException(
+                    "Key was not found.");
+            }
+            else if (keyLength == 3) // 2. 3x3
+            {
+                Matrix<double> keyMatrix = DenseMatrix.Create(3, 3, 0);
+                decMatrix = ModInMinorCofactor(decMatrix.Transpose(), DetMatrix(encMatrix));
+                keyMatrix = (encMatrix * decMatrix);
+                mayBeKey = keyMatrix.Transpose().Enumerate().ToList().Select(i => (int)i % alphabet.Count).ToList();
+                return mayBeKey;
+            }
+            //END
+            else
+            {
+                throw new InvalidAnalysisException(
+                    "Invalid length of the key. This program doesn't support 4x4 and higher matrixes.");
+            }
+
+        }
+
         /// <summary>
         /// Method that encrypts information using Hill cryptographic method.
+        /// Does not work with 4x4 matrixes.
         /// </summary>
         /// <param name="dec"></param>
         /// <returns></returns>
-        public List<int> Encrypt(List<int> dec)
+        public List<int> Encrypt(List<int> dec, List<int> key = null)
         {
+            if (key == null) key = Key;
             try
             {
                 //List<int> key => List<double> keyD with help of the ListConverter
-                List<double> keyD = Key.ConvertAll(x => (double) x);
+                List<double> keyD = key.ConvertAll(x => (double) x);
                 //Converting int[] text => double[] text (List)
                 List<double> decD = dec.ConvertAll(x => (double) x);
                 //Getting the square root number of the length in List<int>
                 //Pointless to use keyD because it just slows down the program
-                int square = Convert.ToInt32(Math.Sqrt(Key.Count));
+                int square = Convert.ToInt32(Math.Sqrt(key.Count));
                 //Creating a matrix for a key using Math.Net
                 Matrix<double> keyMatrix = DenseMatrix.OfColumnMajor(
-                    square, Key.Count / square, keyD.AsEnumerable());
+                    square, key.Count / square, keyD.AsEnumerable());
                 //Creating a matrix for a decrypted text(int) using Math.Net
                 Matrix<double> decMatrix = DenseMatrix.OfColumnMajor(
                     square, (int) dec.Count / square, decD.AsEnumerable());
                 List<int> finalResult = new List<int>();
 
-                //Checking if keyMatrix is different. If numbers are not equal, return.
+                //Checking if keyMatrix is different whenever it's float or integer. If numbers are not equal, return.
                 if (Math.Abs((int) keyMatrix[0, 0]).ToString() != Math.Abs((double) keyMatrix[0, 0]).ToString())
                 {
-                    throw new InvalidKeyException("Invalid key. Try using another.");
+                    throw new InvalidKeyException("Invalid key. Key matrix determinant does not have modular multiplicative inverse.");
                 }
 
                 //Hill method
@@ -110,33 +174,35 @@ namespace LabHill
             }
         }
 
-        public List<int> Decrypt(List<int> enc)
+        public List<int> Decrypt(List<int> enc, List<int> key = null)
         {
-            List<double> keyD = Key.ConvertAll(x => (double) x);
+            if (key == null) key = Key;
+            List<double> keyD = key.ConvertAll(x => (double) x);
             List<double> encD = enc.ConvertAll(x => (double) x);
 
-            int square = Convert.ToInt32(Math.Sqrt(Key.Count));
+            int square = Convert.ToInt32(Math.Sqrt(key.Count));
 
             try
             {
                 //I'm using Math.Net here, that creates Matrix for me, so I don't have to
                 //create a lot of arrays just to contain them
                 Matrix<double> keyMatrix = DenseMatrix.OfColumnMajor(
-                    square, Key.Count / square, keyD.AsEnumerable());
+                    square, key.Count / square, keyD.AsEnumerable());
                 Matrix<double> encMatrix = DenseMatrix.OfColumnMajor(
                     square, enc.Count / square, encD.AsEnumerable());
                 List<int> finalResult = new List<int>();
-
-                if (Math.Abs((int)keyMatrix[0, 0]).ToString() != Math.Abs((double)keyMatrix[0, 0]).ToString())
+                //todo: doesn't work
+                if (Math.Abs((int)keyMatrix[0, 0]).ToString() != Math.Abs(keyMatrix[0, 0]).ToString())
                 {
-                    throw new InvalidKeyException("Invalid key. Try using another.");
+                    throw new InvalidKeyException("Invalid key. Key matrix determinant does not have modular multiplicative inverse.");
                 }
 
+                //4x4 and over matrixes don't work
                 if (keyMatrix.ColumnCount == 3)
                 {
                     keyMatrix = ModInMinorCofactor(keyMatrix.Transpose(), DetMatrix(keyMatrix));
                 }
-                else
+                else // for 2x2; don't know how to make >=4x4
                 {
                     keyMatrix = keyMatrix.Inverse();
                     Console.WriteLine(keyMatrix.ToString());
@@ -252,6 +318,21 @@ namespace LabHill
             return AlpNumberToString(Encrypt(StringToAlpNumber(decString)));
         }
 
+        /// <summary>
+        /// <inheritdoc cref="Analyse(System.Collections.Generic.List{int})"/>
+        /// </summary>
+        /// <param name="decString"></param>
+        /// <returns></returns>
+        public string Analyse(string decString, string encString, int keyLength)
+        {
+            return AlpNumberToString(Analyse(StringToAlpNumber(decString), StringToAlpNumber(encString), keyLength));
+        }
+
+        /// <summary>
+        /// <inheritdoc cref="Decrypt(System.Collections.Generic.List{int})"/>
+        /// </summary>
+        /// <param name="decString"></param>
+        /// <returns></returns>
         public string Decrypt(string encString)
         {
             return AlpNumberToString(Decrypt(StringToAlpNumber(encString)));
@@ -279,7 +360,7 @@ namespace LabHill
             List<string> decStrings = new List<string>();
             foreach (string encStr in encStrings)
             {
-                Encrypt(encStr);
+                Decrypt(encStr);
                 decStrings.Add(encStr);
             }
             return decStrings;

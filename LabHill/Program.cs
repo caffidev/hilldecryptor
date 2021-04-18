@@ -5,6 +5,11 @@ using System.Linq;
 using System.Security.Cryptography;
 namespace LabHill
 {
+    /// <summary>
+    /// Program that decrypts 2x2 and 3x3 matrixes with help of Hill algorithm.
+    /// Doesn't work with >4x4 so, because of the not universal code within.
+    /// Also don't InvalidKeyException doesnt work.
+    /// </summary>
     class Program
     {
         private static List<char> Alphabet { get; set; }
