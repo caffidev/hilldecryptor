@@ -106,15 +106,25 @@ namespace LabHill
                                         return mayBeKey;
                                     }
                                 }
-                                else
+                                else // Mode 1R: we brute-force the key, and find it using the dictionary of English words
                                 {
                                     if (Words.Count == 0) throw new ArgumentNullException("Words weren't found.");
-                                    string aa = AlpNumberToString(Decrypt(enc, mayBeKey));
-                                    if (Words.ContainsKey(aa))
+                                    //There, will be better to use InvalidKeyException
+                                    //But in most cases it doesn't work, so юзаем костыли!
+                                    try
                                     {
-                                        Console.WriteLine($"Found word: {aa}, returning key...");
-                                        return mayBeKey;
-                                    }
+                                        List<int> a = Decrypt(enc, mayBeKey);
+                                        if (!(a[0] < 0 && a[0] > alphabet.Count))
+                                        {
+                                            string aa = AlpNumberToString(a);
+                                            if (Words.ContainsKey(aa))
+                                            {
+                                                Console.WriteLine($"Found word: {aa}, returning key...");
+                                                return mayBeKey;
+                                            }
+                                        }
+                                    } catch(InvalidKeyException){}
+
                                 }
                             }
                         }
@@ -226,6 +236,7 @@ namespace LabHill
                 else // for 2x2; don't know how to make >=4x4
                 {
                     keyMatrix = keyMatrix.Inverse();
+                    if((int)keyMatrix[0, 0] < 0 || (int)keyMatrix[0, 0] > alphabet.Count) throw new InvalidKeyException("Invalid key. Key matrix determinant does not have modular multiplicative inverse."); //bad reverse
                     Console.WriteLine(keyMatrix.ToString());
                     Console.WriteLine(((int) keyMatrix[0, 0]) + ", " + ((int) keyMatrix[0, 0]).ToString());
                 }
@@ -275,7 +286,7 @@ namespace LabHill
         /// <summary>
         /// Converts List of numbers of chars in Alphabet to String
         /// </summary>
-        /// <param name="keys"></param>
+        /// <param name="keys">Numbers(often used for keys so it why it's called keys)</param>
         /// <returns></returns>
 
         public string AlpNumberToString(List<int> keys)
@@ -357,7 +368,9 @@ namespace LabHill
         /// <returns></returns>
         public string Analyse(string encString, int keyLength, string decString = null, Dictionary<string, int> Words = null)
         {
-            return AlpNumberToString(Analyse(StringToAlpNumber(encString), keyLength, StringToAlpNumber(decString), Words));
+            if(decString != null)
+                return AlpNumberToString(Analyse(StringToAlpNumber(encString), keyLength, StringToAlpNumber(decString), Words));
+            else return AlpNumberToString(Analyse(StringToAlpNumber(encString), keyLength, null, Words));
         }
 
         /// <summary>

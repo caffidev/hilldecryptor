@@ -75,7 +75,7 @@ namespace LabHill
                 if (json == null) throw new FileNotFoundException("Words_dictionary.json is empty");
                 //Using dictionary can lead to slower results, so better use List<word> in this case. But it's ta time loss to change it now.
                 EnglishWords = JsonSerializer.Deserialize<Dictionary<string, int>>(json);
-                Console.Write(EnglishWords.Count);
+                Console.WriteLine($"Dictionary of English words successfully loaded, amount of words: " + EnglishWords.Count);
             }
 
             #endregion
