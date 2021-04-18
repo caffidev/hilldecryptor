@@ -74,19 +74,21 @@ namespace LabHill
                 square, (int) enc.Count / square, encD.AsEnumerable());
 
             //Constructing List
+            //To have faster results, it would be smarter to do it with int[] arrays
+            //Usually searches for 0.5-1 seconds
             List<int> mayBeKey = new List<int>();
 
             //HERE YOU NEED TO PASTE UNIVERSAL ALGORITHM
             //1. 2x2
             if (keyLength == 2)
             {
-                for (int i = 0; i < 26; i++)
+                for (int i = 0; i < alphabet.Count; i++)
                 {
-                    for (int j = 0; j < 26; j++)
+                    for (int j = 0; j < alphabet.Count; j++)
                     {
-                        for (int k = 0; k < 26; k++)
+                        for (int k = 0; k < alphabet.Count; k++)
                         {
-                            for (int l = 0; l < 26; l++)
+                            for (int l = 0; l < alphabet.Count; l++)
                             {
                                 mayBeKey = new List<int>(new[] {i, j, k, l});
                                 List<int> aa = Encrypt(dec, mayBeKey);
@@ -102,7 +104,7 @@ namespace LabHill
                 throw new InvalidAnalysisException(
                     "Key was not found.");
             }
-            else if (keyLength == 3) // 2. 3x3
+            else if (keyLength == 3) // 2. 3x3 - temporarily does not work
             {
                 Matrix<double> keyMatrix = DenseMatrix.Create(3, 3, 0);
                 decMatrix = ModInMinorCofactor(decMatrix.Transpose(), DetMatrix(encMatrix));
@@ -234,6 +236,11 @@ namespace LabHill
         #endregion
 
         #region Additional Methods
+        /// <summary>
+        /// Converts String to List<int> with numbers of chars in Alphabet
+        /// </summary>
+        /// <param name="keyStr"></param>
+        /// <returns></returns>
         public List<int> StringToAlpNumber(string keyStr)
         {
             List<int> key = new List<int>();
@@ -245,6 +252,12 @@ namespace LabHill
 
             return key;
         }
+
+        /// <summary>
+        /// Converts List of numbers of chars in Alphabet to String
+        /// </summary>
+        /// <param name="keys"></param>
+        /// <returns></returns>
 
         public string AlpNumberToString(List<int> keys)
         {
