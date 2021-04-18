@@ -154,7 +154,7 @@ namespace LabHill.Tests
             InitializeEnglishAlphabet();
             using (var algorithm = new CryptoHill(decodedStr, Alphabet))
             {
-                Assert.Matches(algorithm.Analyse(decodedStr, encoded2x2, 2), key2x2);
+                Assert.Matches(algorithm.Analyse(encoded2x2, 2, decodedStr), key2x2);
             }
         }
 
@@ -164,7 +164,7 @@ namespace LabHill.Tests
             InitializeEnglishAlphabet();
             using (var algorithm = new CryptoHill(decodedStr, Alphabet))
             {
-                Assert.Matches(algorithm.Analyse(decodedStr, encoded3x3, 3), key3x3);
+                Assert.Matches(algorithm.Analyse(encoded3x3, 3, decodedStr), key3x3);
             }
         }
 
@@ -174,7 +174,7 @@ namespace LabHill.Tests
             InitializeEnglishAlphabet();
             using (var algorithm = new CryptoHill(decodedStr, Alphabet))
             {
-                Assert.Matches(algorithm.AlpNumberToString(algorithm.Analyse(decodedAlph, encodedAlph, 2)), algorithm.AlpNumberToString(keyAlph));
+                Assert.Matches(algorithm.AlpNumberToString(algorithm.Analyse(encodedAlph, 2, decodedAlph)), algorithm.AlpNumberToString(keyAlph));
             }
         }
 
@@ -184,7 +184,7 @@ namespace LabHill.Tests
             InitializeEnglishAlphabet();
             using (var algorithm = new CryptoHill(decodedStr, Alphabet))
             {
-                Assert.Matches(algorithm.AlpNumberToString(algorithm.Analyse(decodedAlph3x3, encodedAlph3x3, 2)), algorithm.AlpNumberToString(keyAlph3x3));
+                Assert.Matches(algorithm.AlpNumberToString(algorithm.Analyse(encodedAlph3x3, 2, decodedAlph3x3)), algorithm.AlpNumberToString(keyAlph3x3));
             }
         }
 

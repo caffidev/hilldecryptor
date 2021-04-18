@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using LabHill.Exceptions;
 using MathNet.Numerics.LinearAlgebra;
@@ -62,49 +64,66 @@ namespace LabHill
         /// <param name="enc"></param>
         /// <param name="keyLength">The Length of The Key in Square Root</param>
         /// <returns></returns>
-        public List<int> Analyse(List<int> dec, List<int> enc, int keyLength)
+        public List<int> Analyse( List<int> enc, int keyLength, List<int> dec = null, Dictionary<string, int> Words = null)
         {
-            List<double> decD = dec.ConvertAll(x => (double) x);
             List<double> encD = enc.ConvertAll(x => (double) x);
-
-            int square = (int) Math.Sqrt(decD.Count);
-            Matrix<double> decMatrix = DenseMatrix.OfColumnMajor(
-                square, (int) dec.Count / square, decD.AsEnumerable());
+            int square = (int) Math.Sqrt(encD.Count);
+            Matrix<double> decMatrix = null;
             Matrix<double> encMatrix = DenseMatrix.OfColumnMajor(
                 square, (int) enc.Count / square, encD.AsEnumerable());
+
+            if (dec != null)
+            {
+                List<double> decD = dec.ConvertAll(x => (double) x);
+                decMatrix = DenseMatrix.OfColumnMajor(
+                    square, (int) dec.Count / square, decD.AsEnumerable());
+            }
 
             //Constructing List
             //To have faster results, it would be smarter to do it with int[] arrays
             //Usually searches for 0.5-1 seconds
             List<int> mayBeKey = new List<int>();
 
-            //HERE YOU NEED TO PASTE UNIVERSAL ALGORITHM
+            //HERE YOU NEED TO PASTE UNIVERSAL ALGORITHM(but I'll use what I found(not universal, so it's not working for bigger matrixes)
+            //https://www.rcs.cic.ipn.mx/2019_148_3/Hill%20Algorithm%20Decryption%20using%20Parallel%20Calculations%20by%20Brute%20Force.pdf
             //1. 2x2
             if (keyLength == 2)
             {
-                for (int i = 0; i < alphabet.Count; i++)
+                for (int i = 0; i < alphabet.Count; i++) // 1
                 {
-                    for (int j = 0; j < alphabet.Count; j++)
+                    for (int j = 0; j < alphabet.Count; j++) // 2
                     {
-                        for (int k = 0; k < alphabet.Count; k++)
+                        for (int k = 0; k < alphabet.Count; k++) // 3
                         {
-                            for (int l = 0; l < alphabet.Count; l++)
+                            for (int l = 0; l < alphabet.Count; l++) // 4
                             {
                                 mayBeKey = new List<int>(new[] {i, j, k, l});
-                                List<int> aa = Encrypt(dec, mayBeKey);
-                                if (aa.SequenceEqual(enc))
+                                if (dec != null) // Mode 0L: we know decrypted part, and need to find the key
                                 {
-                                    return mayBeKey;
+                                    List<int> aa = Encrypt(dec, mayBeKey);
+                                    if (aa.SequenceEqual(enc))
+                                    {
+                                        return mayBeKey;
+                                    }
                                 }
-
+                                else
+                                {
+                                    if (Words.Count == 0) throw new ArgumentNullException("Words weren't found.");
+                                    string aa = AlpNumberToString(Decrypt(enc, mayBeKey));
+                                    if (Words.ContainsKey(aa))
+                                    {
+                                        Console.WriteLine($"Found word: {aa}, returning key...");
+                                        return mayBeKey;
+                                    }
+                                }
                             }
                         }
                     }
                 }
                 throw new InvalidAnalysisException(
-                    "Key was not found.");
+                    "Key was not found."); // Bad encrypted text was used.
             }
-            else if (keyLength == 3) // 2. 3x3 - temporarily does not work
+            else if (keyLength == 3 && dec != null) // 2. 3x3 - temporarily does not work; Brute-forcing also
             {
                 Matrix<double> keyMatrix = DenseMatrix.Create(3, 3, 0);
                 decMatrix = ModInMinorCofactor(decMatrix.Transpose(), DetMatrix(encMatrix));
@@ -336,9 +355,9 @@ namespace LabHill
         /// </summary>
         /// <param name="decString"></param>
         /// <returns></returns>
-        public string Analyse(string decString, string encString, int keyLength)
+        public string Analyse(string encString, int keyLength, string decString = null, Dictionary<string, int> Words = null)
         {
-            return AlpNumberToString(Analyse(StringToAlpNumber(decString), StringToAlpNumber(encString), keyLength));
+            return AlpNumberToString(Analyse(StringToAlpNumber(encString), keyLength, StringToAlpNumber(decString), Words));
         }
 
         /// <summary>

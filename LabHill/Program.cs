@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 namespace LabHill
 {
     /// <summary>
@@ -16,6 +18,7 @@ namespace LabHill
         private static string Key { get; set; }
         private static string Path { get; } = "./encryptedWords.txt";
         private static string[] Words { get; set; }
+        private static Dictionary<string, int> EnglishWords { get; set; }
         public static void Main(string[] args)
         {
             #region Initialization
@@ -62,8 +65,23 @@ namespace LabHill
             Console.WriteLine();
             #endregion
 
+            #region Initialization of English Word List
+
+            //it's better to use File Manager, but I'm lazy asf
+            //Tried to use Resource Manager - but this idea was fucked up by Microsoft's stupidity
+            using (StreamReader reader = new StreamReader("./words_dictionary.json"))
+            {
+                string json = reader.ReadToEnd();
+                if (json == null) throw new FileNotFoundException("Words_dictionary.json is empty");
+                //Using dictionary can lead to slower results, so better use List<word> in this case. But it's ta time loss to change it now.
+                EnglishWords = JsonSerializer.Deserialize<Dictionary<string, int>>(json);
+                Console.Write(EnglishWords.Count);
+            }
+
+            #endregion
             #region Keyword
 
+            //To do first, you need a key, if you want a analysis you need to input it, but it will not be read
             Console.Write("Write a decryption-key to use: ");
             Key = Console.ReadLine();
 
@@ -76,10 +94,17 @@ namespace LabHill
                 //All commands that you want to use - here
                 //All tests that I have done - in LabHill.Tests
                 //The main result of program - below:
-                string enc = algorithm.Encrypt("cipher");
-                Console.WriteLine(enc);
-                string dec = algorithm.Decrypt(enc);
-                Console.WriteLine(dec);
+
+                //1. Test encrypting and decrypting
+
+                //string enc = algorithm.Encrypt("cipher");
+                //Console.WriteLine(enc);
+                //string dec = algorithm.Decrypt(enc);
+                //Console.WriteLine(dec);
+
+                //2. Processing words with Brute-Forcing(only works for 2x2)
+                algorithm.Analyse(Words[0],2, Words: EnglishWords);
+
             }
                 
             #endregion
