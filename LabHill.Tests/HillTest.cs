@@ -1,7 +1,5 @@
 using LabHill;
-using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using LabHill.Exceptions;
 using Xunit;
 
@@ -9,6 +7,7 @@ namespace LabHill.Tests
 {
     public class HillTest
     {
+        #region Initialize
         private List<char> Alphabet { get; set; }
         private List<int> keyAlph = new() { 3, 2, 8, 5 };
         private List<int> decodedAlph = new () { 15, 0, 24, 12, 14, 17, 4, 12, 14, 13, 4, 24 };
@@ -27,7 +26,8 @@ namespace LabHill.Tests
         private string key3x3 = "hillciphe";
         private string encoded3x3 = "jcqint";
 
-        private string key4x4 = "paymoremoney";
+        private string key4x4 = "paymoremonessssy";
+        //private string encoded4x4 = "";
         internal void InitializeEnglishAlphabet()
         {
             Alphabet = new List<char>();
@@ -38,7 +38,9 @@ namespace LabHill.Tests
                 i++;
             }
         }
+        #endregion
 
+        #region Encrypting and Decrypting List<int>
         [Fact]
         public void Encrypt_Int_2x2()
         {
@@ -79,6 +81,9 @@ namespace LabHill.Tests
             }
         }
 
+        #endregion
+
+        #region Encrypting and Decrypting String
         [Fact]
         public void Encrypt_String_2x2()
         {
@@ -135,16 +140,62 @@ namespace LabHill.Tests
             InitializeEnglishAlphabet();
             using (var algorithm = new CryptoHill(key4x4, Alphabet))
             {
-                Assert.Matches(algorithm.Decrypt( decodedStr), decodedStr);
+                Assert.Matches(algorithm.Decrypt(decodedStr), decodedStr);
             }
         }
+
+#endregion
+
+        #region Analyse Testing
+
+        [Fact]
+        public void Analyse_String_2x2()
+        {
+            InitializeEnglishAlphabet();
+            using (var algorithm = new CryptoHill(decodedStr, Alphabet))
+            {
+                Assert.Matches(algorithm.Analyse(decodedStr, encoded2x2, 2), key2x2);
+            }
+        }
+
+        [Fact]
+        public void Analyse_String_3x3()
+        {
+            InitializeEnglishAlphabet();
+            using (var algorithm = new CryptoHill(decodedStr, Alphabet))
+            {
+                Assert.Matches(algorithm.Analyse(decodedStr, encoded3x3, 3), key3x3);
+            }
+        }
+
+        [Fact]
+        public void Analyse_Int_2x2()
+        {
+            InitializeEnglishAlphabet();
+            using (var algorithm = new CryptoHill(decodedStr, Alphabet))
+            {
+                Assert.Matches(algorithm.AlpNumberToString(algorithm.Analyse(decodedAlph, encodedAlph, 2)), algorithm.AlpNumberToString(keyAlph));
+            }
+        }
+
+        [Fact]
+        public void Analyse_Int_3x3()
+        {
+            InitializeEnglishAlphabet();
+            using (var algorithm = new CryptoHill(decodedStr, Alphabet))
+            {
+                Assert.Matches(algorithm.AlpNumberToString(algorithm.Analyse(decodedAlph3x3, encodedAlph3x3, 2)), algorithm.AlpNumberToString(keyAlph3x3));
+            }
+        }
+
+        #endregion
 
         #region Exception Testing
         [Fact]
         public void Encrypt_InvalidKey_InvalidKeyException()
         {
             InitializeEnglishAlphabet();
-            string errorKey = "denisloxx";
+            string errorKey = "hdls";
             using (var algorithm = new CryptoHill(errorKey, Alphabet))
             {
                 //Doesn't work because there's no 
@@ -156,10 +207,10 @@ namespace LabHill.Tests
         public void Encrypt_InvalidKey_InvalidKeyLengthException()
         {
             InitializeEnglishAlphabet();
-            string errorKey = "denisloxkujgb";
+            string errorKey = "lololololssdsdsdsdsdsddsdsdsdsdsdsds";
             using (var algorithm = new CryptoHill(errorKey, Alphabet))
             {
-                Assert.Throws<InvalidKeyLengthException>(() => algorithm.Encrypt("cipher"));
+                Assert.Throws<InvalidKeyLengthException>(() => algorithm.Encrypt("cipsdsher"));
             }
         }
 
@@ -167,11 +218,11 @@ namespace LabHill.Tests
         public void Decrypt_InvalidKey_InvalidKeyException()
         {
             InitializeEnglishAlphabet();
-            string errorKey = "denisloxx"; //has 3^2 size, but it's wrong because matrixes doesn't come up
+            string errorKey = "hils"; //has 3^2 size, but it's wrong because matrixes doesn't come up
             using (var algorithm = new CryptoHill(errorKey, Alphabet))
             {
                 //Doesn't work because there's no 
-                Assert.Throws<InvalidKeyException>(() => algorithm.Decrypt("jcqint"));
+                Assert.Throws<InvalidKeyException>(() => algorithm.Decrypt("jcqisddsnt"));
             }
         }
 
