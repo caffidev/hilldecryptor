@@ -5,12 +5,14 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
+
 namespace LabHill
 {
     /// <summary>
     /// Program that decrypts 2x2 and 3x3 matrixes with help of Hill algorithm.
     /// Doesn't work with >4x4 so, because of the not universal code within.
-    /// Also don't InvalidKeyException doesnt work.
+    /// Also InvalidKeyException doesnt work.
     /// </summary>
     class Program
     {
@@ -103,8 +105,13 @@ namespace LabHill
                 //Console.WriteLine(dec);
 
                 //2. Processing words with Brute-Forcing(only works for 2x2)
-                algorithm.Analyse(Words[0],2, Words: EnglishWords);
 
+                foreach (var word in Words)
+                {
+                    var e = algorithm.Analyse(word, 2, Words: EnglishWords);
+                    Console.WriteLine(e);
+                    Thread.Sleep(1000);
+                }
             }
                 
             #endregion

@@ -89,6 +89,8 @@ namespace LabHill
             //1. 2x2
             if (keyLength == 2)
             {
+                int amount = 0;
+                if(dec == null)Console.WriteLine("We didn't found a part of a plain text, so starting brute-forcing...");
                 for (int i = 0; i < alphabet.Count; i++) // 1
                 {
                     for (int j = 0; j < alphabet.Count; j++) // 2
@@ -117,14 +119,21 @@ namespace LabHill
                                         if (!(a[0] < 0 && a[0] > alphabet.Count))
                                         {
                                             string aa = AlpNumberToString(a);
+                                            Console.WriteLine(aa);
                                             if (Words.ContainsKey(aa))
                                             {
                                                 Console.WriteLine($"Found word: {aa}, returning key...");
                                                 return mayBeKey;
                                             }
                                         }
-                                    } catch(InvalidKeyException){}
-
+                                    }
+                                    catch (InvalidKeyException)
+                                    {
+                                    }
+                                    finally
+                                    {
+                                        amount++; Console.WriteLine($"Attempt {amount} of {(Math.Pow(alphabet.Count, 4))}"); //Helper.WriteOnAPreviousLine($"Attempt {amount} of {(Math.Pow(alphabet.Count, 4))}");*/
+                                    }
                                 }
                             }
                         }
@@ -237,8 +246,8 @@ namespace LabHill
                 {
                     keyMatrix = keyMatrix.Inverse();
                     if((int)keyMatrix[0, 0] < 0 || (int)keyMatrix[0, 0] > alphabet.Count) throw new InvalidKeyException("Invalid key. Key matrix determinant does not have modular multiplicative inverse."); //bad reverse
-                    Console.WriteLine(keyMatrix.ToString());
-                    Console.WriteLine(((int) keyMatrix[0, 0]) + ", " + ((int) keyMatrix[0, 0]).ToString());
+                    //Console.WriteLine(keyMatrix.ToString());
+                    //Console.WriteLine(((int) keyMatrix[0, 0]) + ", " + ((int) keyMatrix[0, 0]).ToString());
                 }
 
 
